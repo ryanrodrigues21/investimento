@@ -8,19 +8,19 @@ export default function Landing() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5">
+    <div className="min-h-screen trading-bg">
       {/* Header */}
-      <header className="border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50">
+      <header className="trading-header sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
-              <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
-                <ChartLine className="h-6 w-6 text-white" />
+              <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center glow-effect">
+                <ChartLine className="h-6 w-6 text-primary-foreground" />
               </div>
-              <span className="ml-3 text-xl font-bold text-gray-900">InvestPro</span>
+              <span className="ml-3 text-xl font-bold text-foreground">CryptoPro Exchange</span>
             </div>
-            <Button onClick={handleLogin} className="bg-primary hover:bg-primary/90">
-              Fazer Login
+            <Button onClick={handleLogin} className="bg-primary hover:bg-primary/90 glow-effect">
+              Entrar
             </Button>
           </div>
         </div>
@@ -30,28 +30,28 @@ export default function Landing() {
       <section className="py-20 lg:py-32">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h1 className="text-4xl lg:text-6xl font-bold text-gray-900 mb-6">
-              Invista com{" "}
-              <span className="text-gradient">Inteligência Artificial</span>
+            <h1 className="text-4xl lg:text-6xl font-bold text-foreground mb-6">
+              Trade Crypto com{" "}
+              <span className="text-gradient">IA Avançada</span>
             </h1>
-            <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
-              Plataforma completa de investimentos digitais com IA de trading avançada. 
-              Maximize seus rendimentos com nossa tecnologia de ponta.
+            <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
+              Exchange profissional de criptomoedas com algoritmos de trading quantitativo. 
+              Maximize seus lucros com nossa tecnologia institucional.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button 
                 onClick={handleLogin}
                 size="lg" 
-                className="bg-primary hover:bg-primary/90 text-lg px-8 py-4"
+                className="bg-primary hover:bg-primary/90 text-lg px-8 py-4 glow-effect"
               >
-                Começar a Investir
+                Começar Trading
               </Button>
               <Button 
                 variant="outline" 
                 size="lg"
-                className="text-lg px-8 py-4"
+                className="text-lg px-8 py-4 border-border text-foreground hover:bg-muted"
               >
-                Ver Demonstração
+                API Documentation
               </Button>
             </div>
           </div>
@@ -59,53 +59,53 @@ export default function Landing() {
       </section>
 
       {/* Features */}
-      <section className="py-20 bg-white">
+      <section className="py-20 bg-card">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
-              Por que escolher o InvestPro?
+            <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">
+              Por que CryptoPro Exchange?
             </h2>
-            <p className="text-xl text-gray-600">
-              Tecnologia avançada para maximizar seus investimentos
+            <p className="text-xl text-muted-foreground">
+              Tecnologia institucional para traders profissionais
             </p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <Card className="border-2 hover:border-primary/50 transition-colors">
+            <Card className="trading-card hover:border-primary/50 transition-colors">
               <CardContent className="p-8 text-center">
                 <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Zap className="h-8 w-8 text-primary" />
                 </div>
-                <h3 className="text-xl font-bold mb-4">IA de Trading</h3>
-                <p className="text-gray-600">
-                  Nossa inteligência artificial opera 24/7 nos mercados de criptomoedas 
-                  com 89,3% de taxa de sucesso.
+                <h3 className="text-xl font-bold mb-4 text-foreground">Algoritmos Quantitativos</h3>
+                <p className="text-muted-foreground">
+                  Algoritmos de HFT e market making operando 24/7 nos principais 
+                  mercados cripto com 94,7% de win rate.
                 </p>
               </CardContent>
             </Card>
 
-            <Card className="border-2 hover:border-primary/50 transition-colors">
+            <Card className="trading-card hover:border-primary/50 transition-colors">
               <CardContent className="p-8 text-center">
                 <div className="w-16 h-16 bg-secondary/10 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Shield className="h-8 w-8 text-secondary" />
                 </div>
-                <h3 className="text-xl font-bold mb-4">Segurança Total</h3>
-                <p className="text-gray-600">
-                  Seus investimentos são protegidos com criptografia de nível bancário 
-                  e múltiplas camadas de segurança.
+                <h3 className="text-xl font-bold mb-4 text-foreground">Cold Storage</h3>
+                <p className="text-muted-foreground">
+                  98% dos ativos em cold storage multi-sig com segurança militar. 
+                  Auditado por Certik e segurado até $500M.
                 </p>
               </CardContent>
             </Card>
 
-            <Card className="border-2 hover:border-primary/50 transition-colors">
+            <Card className="trading-card hover:border-primary/50 transition-colors">
               <CardContent className="p-8 text-center">
                 <div className="w-16 h-16 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-4">
                   <TrendingUp className="h-8 w-8 text-accent" />
                 </div>
-                <h3 className="text-xl font-bold mb-4">Rendimentos Diários</h3>
-                <p className="text-gray-600">
-                  Receba rendimentos calculados diariamente com transparência 
-                  total sobre suas operações.
+                <h3 className="text-xl font-bold mb-4 text-foreground">Liquidez Profunda</h3>
+                <p className="text-muted-foreground">
+                  Market making com $2.8B em liquidez. Spreads ultra baixos 
+                  e execução instantânea para grandes volumes.
                 </p>
               </CardContent>
             </Card>
@@ -114,137 +114,137 @@ export default function Landing() {
       </section>
 
       {/* Stats */}
-      <section className="py-20 bg-gray-50">
+      <section className="py-20 bg-muted">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="text-center">
-              <div className="text-4xl font-bold text-primary mb-2">R$ 2.4M+</div>
-              <div className="text-gray-600">Volume Total Investido</div>
+              <div className="text-4xl font-bold text-primary mb-2 trading-number">$2.8B</div>
+              <div className="text-muted-foreground">Volume Diário</div>
             </div>
             <div className="text-center">
-              <div className="text-4xl font-bold text-secondary mb-2">1,247</div>
-              <div className="text-gray-600">Investidores Ativos</div>
+              <div className="text-4xl font-bold text-secondary mb-2 trading-number">847,392</div>
+              <div className="text-muted-foreground">Traders Ativos</div>
             </div>
             <div className="text-center">
-              <div className="text-4xl font-bold text-accent mb-2">89.3%</div>
-              <div className="text-gray-600">Taxa de Sucesso IA</div>
+              <div className="text-4xl font-bold text-accent mb-2 trading-number">0.05%</div>
+              <div className="text-muted-foreground">Spread Médio</div>
             </div>
             <div className="text-center">
-              <div className="text-4xl font-bold text-primary mb-2">24/7</div>
-              <div className="text-gray-600">Operação Contínua</div>
+              <div className="text-4xl font-bold text-primary mb-2 trading-number">&lt; 10ms</div>
+              <div className="text-muted-foreground">Latência Média</div>
             </div>
           </div>
         </div>
       </section>
 
       {/* Plans Preview */}
-      <section className="py-20 bg-white">
+      <section className="py-20 bg-card">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
-              Planos de Investimento
+            <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">
+              Planos de Trading
             </h2>
-            <p className="text-xl text-gray-600">
-              Escolha o plano ideal para seus objetivos
+            <p className="text-xl text-muted-foreground">
+              Escolha a estratégia ideal para seu perfil de risco
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Starter Plan */}
-            <Card className="border-2 hover:border-primary/50 transition-colors">
+            {/* Conservative Plan */}
+            <Card className="trading-card hover:border-primary/50 transition-colors">
               <CardContent className="p-8">
                 <div className="text-center mb-6">
                   <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
                     <Users className="h-8 w-8 text-primary" />
                   </div>
-                  <h3 className="text-xl font-bold">Starter</h3>
-                  <p className="text-gray-600">Ideal para iniciantes</p>
+                  <h3 className="text-xl font-bold text-foreground">Conservative</h3>
+                  <p className="text-muted-foreground">Baixo risco, retorno estável</p>
                 </div>
                 
                 <div className="space-y-4 mb-8">
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Período:</span>
-                    <span className="font-semibold">30 dias</span>
+                    <span className="text-muted-foreground">Estratégia:</span>
+                    <span className="font-semibold text-foreground">Market Making</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Taxa Diária:</span>
-                    <span className="font-semibold text-primary">1,5%</span>
+                    <span className="text-muted-foreground">Retorno Anual:</span>
+                    <span className="font-semibold text-bull trading-number">12-18%</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Retorno Estimado:</span>
-                    <span className="font-bold text-secondary text-lg">45%</span>
+                    <span className="text-muted-foreground">Max Drawdown:</span>
+                    <span className="font-bold text-neutral trading-number">&lt; 5%</span>
                   </div>
                 </div>
                 
                 <Button onClick={handleLogin} className="w-full">
-                  Investir Agora
+                  Ativar Estratégia
                 </Button>
               </CardContent>
             </Card>
 
-            {/* Premium Plan */}
-            <Card className="border-2 border-primary bg-gradient-to-br from-primary to-secondary text-white">
+            {/* Aggressive Plan */}
+            <Card className="trading-card border-primary bg-gradient-to-br from-primary/20 to-secondary/20 relative">
               <CardContent className="p-8">
-                <div className="absolute top-4 right-4 bg-accent text-dark px-3 py-1 rounded-full text-xs font-bold">
-                  POPULAR
+                <div className="absolute top-4 right-4 bg-accent text-accent-foreground px-3 py-1 rounded-full text-xs font-bold">
+                  MAIS POPULAR
                 </div>
                 <div className="text-center mb-6">
-                  <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <div className="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-4">
                     <Award className="h-8 w-8 text-accent" />
                   </div>
-                  <h3 className="text-xl font-bold">Premium</h3>
-                  <p className="text-blue-100">Para investidores experientes</p>
+                  <h3 className="text-xl font-bold text-foreground">Aggressive</h3>
+                  <p className="text-muted-foreground">Alto retorno, risco controlado</p>
                 </div>
                 
                 <div className="space-y-4 mb-8">
                   <div className="flex justify-between">
-                    <span className="text-blue-100">Período:</span>
-                    <span className="font-semibold">90 dias</span>
+                    <span className="text-muted-foreground">Estratégia:</span>
+                    <span className="font-semibold text-foreground">Momentum + Arbitrage</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-blue-100">Taxa Diária:</span>
-                    <span className="font-semibold text-accent">2,5%</span>
+                    <span className="text-muted-foreground">Retorno Anual:</span>
+                    <span className="font-semibold text-bull trading-number">45-85%</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-blue-100">Retorno Estimado:</span>
-                    <span className="font-bold text-accent text-lg">225%</span>
+                    <span className="text-muted-foreground">Max Drawdown:</span>
+                    <span className="font-bold text-neutral trading-number">&lt; 15%</span>
                   </div>
                 </div>
                 
-                <Button onClick={handleLogin} className="w-full bg-white text-primary hover:bg-gray-100">
-                  Investir Agora
+                <Button onClick={handleLogin} className="w-full bg-primary text-primary-foreground hover:bg-primary/90">
+                  Ativar Estratégia
                 </Button>
               </CardContent>
             </Card>
 
             {/* Professional Plan */}
-            <Card className="border-2 hover:border-primary/50 transition-colors">
+            <Card className="trading-card hover:border-primary/50 transition-colors">
               <CardContent className="p-8">
                 <div className="text-center mb-6">
                   <div className="w-16 h-16 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-4">
                     <TrendingUp className="h-8 w-8 text-accent" />
                   </div>
-                  <h3 className="text-xl font-bold">Professional</h3>
-                  <p className="text-gray-600">Máximo retorno</p>
+                  <h3 className="text-xl font-bold text-foreground">Professional</h3>
+                  <p className="text-muted-foreground">HFT e derivativos</p>
                 </div>
                 
                 <div className="space-y-4 mb-8">
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Período:</span>
-                    <span className="font-semibold">180 dias</span>
+                    <span className="text-muted-foreground">Estratégia:</span>
+                    <span className="font-semibold text-foreground">HFT + Options</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Taxa Diária:</span>
-                    <span className="font-semibold text-primary">3,2%</span>
+                    <span className="text-muted-foreground">Retorno Anual:</span>
+                    <span className="font-semibold text-bull trading-number">120-300%</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Retorno Estimado:</span>
-                    <span className="font-bold text-secondary text-lg">576%</span>
+                    <span className="text-muted-foreground">Max Drawdown:</span>
+                    <span className="font-bold text-bear trading-number">&lt; 25%</span>
                   </div>
                 </div>
                 
                 <Button onClick={handleLogin} className="w-full">
-                  Investir Agora
+                  Ativar Estratégia
                 </Button>
               </CardContent>
             </Card>
@@ -261,10 +261,10 @@ export default function Landing() {
                 <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
                   <ChartLine className="h-6 w-6 text-white" />
                 </div>
-                <span className="ml-3 text-xl font-bold">InvestPro</span>
+                <span className="ml-3 text-xl font-bold text-foreground">CryptoPro Exchange</span>
               </div>
-              <p className="text-gray-400">
-                Plataforma de investimentos digitais com IA de trading avançada.
+              <p className="text-muted-foreground">
+                Exchange profissional de criptomoedas com tecnologia institucional.
               </p>
             </div>
             
@@ -305,7 +305,7 @@ export default function Landing() {
           </div>
           
           <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
-            <p>&copy; 2024 InvestPro. Todos os direitos reservados.</p>
+            <p>&copy; 2024 CryptoPro Exchange. Todos os direitos reservados.</p>
           </div>
         </div>
       </footer>

@@ -75,7 +75,7 @@ export default function TransactionHistory({ transactions }: TransactionHistoryP
       case "investment_completion":
         return <Coins className="h-5 w-5 text-accent" />;
       default:
-        return <ArrowDownCircle className="h-5 w-5 text-gray-400" />;
+        return <ArrowDownCircle className="h-5 w-5 text-muted-foreground" />;
     }
   };
 
@@ -87,11 +87,11 @@ export default function TransactionHistory({ transactions }: TransactionHistoryP
         return "bg-success/10 border-success/20";
       case "withdrawal":
       case "early_withdrawal":
-        return "bg-orange-50 border-orange-200";
+        return "bg-warning/10 border-warning/20";
       case "investment":
         return "bg-primary/10 border-primary/20";
       default:
-        return "bg-gray-50 border-gray-200";
+        return "bg-muted/50 border-border";
     }
   };
 
@@ -123,7 +123,7 @@ export default function TransactionHistory({ transactions }: TransactionHistoryP
       case "failed":
         return <XCircle className="h-4 w-4 text-destructive" />;
       default:
-        return <AlertCircle className="h-4 w-4 text-gray-400" />;
+        return <AlertCircle className="h-4 w-4 text-muted-foreground" />;
     }
   };
 
@@ -145,11 +145,11 @@ export default function TransactionHistory({ transactions }: TransactionHistoryP
       case "completed":
         return "bg-success/10 text-success border-success/20";
       case "pending":
-        return "bg-amber-50 text-amber-700 border-amber-200";
+        return "bg-warning/10 text-warning border-warning/20";
       case "failed":
         return "bg-destructive/10 text-destructive border-destructive/20";
       default:
-        return "bg-gray-50 text-gray-600 border-gray-200";
+        return "bg-muted/50 text-muted-foreground border-border";
     }
   };
 
@@ -162,9 +162,9 @@ export default function TransactionHistory({ transactions }: TransactionHistoryP
     return (
       <Card>
         <CardContent className="p-6">
-          <h3 className="text-xl font-bold text-gray-900 mb-6">Histórico de Transações</h3>
-          <div className="text-center py-12 text-gray-500">
-            <Coins className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+          <h3 className="text-xl font-bold text-foreground mb-6">Histórico de Transações</h3>
+          <div className="text-center py-12 text-muted-foreground">
+            <Coins className="h-12 w-12 mx-auto mb-4 text-muted-foreground/50" />
             <p>Nenhuma transação encontrada</p>
             <p className="text-sm">Suas transações aparecerão aqui</p>
           </div>
@@ -176,7 +176,7 @@ export default function TransactionHistory({ transactions }: TransactionHistoryP
   return (
     <Card>
       <CardContent className="p-6">
-        <h3 className="text-xl font-bold text-gray-900 mb-6">Histórico de Transações</h3>
+        <h3 className="text-xl font-bold text-foreground mb-6">Histórico de Transações</h3>
         <div className="space-y-4">
           {transactions.map((transaction) => {
             const isPositive = isPositiveTransaction(transaction.type, transaction.amount);
@@ -184,7 +184,7 @@ export default function TransactionHistory({ transactions }: TransactionHistoryP
             return (
               <div 
                 key={transaction.id} 
-                className={`flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 transition-colors ${
+                className={`flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors ${
                   getTransactionColor(transaction.type)
                 }`}
               >
@@ -194,9 +194,9 @@ export default function TransactionHistory({ transactions }: TransactionHistoryP
                   </div>
                   <div>
                     <p className="font-semibold">{getTransactionTypeLabel(transaction.type)}</p>
-                    <p className="text-sm text-gray-600">{formatDateTime(transaction.createdAt)}</p>
+                    <p className="text-sm text-muted-foreground">{formatDateTime(transaction.createdAt)}</p>
                     {transaction.description && (
-                      <p className="text-xs text-gray-500 mt-1">{transaction.description}</p>
+                      <p className="text-xs text-muted-foreground/70 mt-1">{transaction.description}</p>
                     )}
                   </div>
                 </div>
@@ -223,7 +223,7 @@ export default function TransactionHistory({ transactions }: TransactionHistoryP
         
         {transactions.length >= 10 && (
           <div className="text-center mt-6">
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-muted-foreground">
               Mostrando as últimas {transactions.length} transações
             </p>
           </div>

@@ -31,22 +31,22 @@ export default function Navigation() {
   };
 
   return (
-    <nav className="bg-white shadow-sm border-b sticky top-0 z-40">
+    <nav className="trading-header shadow-lg sticky top-0 z-40">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex items-center">
             <div className="flex-shrink-0 flex items-center">
-              <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
-                <ChartLine className="h-6 w-6 text-white" />
+              <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center glow-effect">
+                <ChartLine className="h-6 w-6 text-primary-foreground" />
               </div>
-              <span className="ml-3 text-xl font-bold text-gray-900">InvestPro</span>
+              <span className="ml-3 text-xl font-bold text-foreground">CryptoPro Exchange</span>
             </div>
             <div className="hidden md:ml-6 md:flex md:space-x-8">
               <Link href="/">
                 <a className={`border-b-2 py-2 px-1 text-sm font-medium transition-colors ${
                   isActive("/") 
                     ? "border-primary text-primary" 
-                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                    : "border-transparent text-muted-foreground hover:text-foreground hover:border-border"
                 }`}>
                   Dashboard
                 </a>
@@ -55,7 +55,7 @@ export default function Navigation() {
                 <a className={`border-b-2 py-2 px-1 text-sm font-medium transition-colors ${
                   isActive("/investments") 
                     ? "border-primary text-primary" 
-                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                    : "border-transparent text-muted-foreground hover:text-foreground hover:border-border"
                 }`}>
                   Investimentos
                 </a>
@@ -64,17 +64,17 @@ export default function Navigation() {
                 <a className={`border-b-2 py-2 px-1 text-sm font-medium transition-colors ${
                   isActive("/wallet") 
                     ? "border-primary text-primary" 
-                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                    : "border-transparent text-muted-foreground hover:text-foreground hover:border-border"
                 }`}>
                   Carteira
                 </a>
               </Link>
-              {user?.isAdmin && (
+              {user && 'isAdmin' in user && user.isAdmin && (
                 <Link href="/admin">
                   <a className={`border-b-2 py-2 px-1 text-sm font-medium transition-colors ${
                     isActive("/admin") 
                       ? "border-primary text-primary" 
-                      : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                      : "border-transparent text-muted-foreground hover:text-foreground hover:border-border"
                   }`}>
                     Admin
                   </a>
@@ -83,10 +83,10 @@ export default function Navigation() {
             </div>
           </div>
           <div className="flex items-center space-x-4">
-            <div className="flex items-center space-x-2 bg-gray-100 px-3 py-1 rounded-lg">
+            <div className="flex items-center space-x-2 bg-muted px-3 py-1 rounded-lg trading-number">
               <Wallet className="h-4 w-4 text-secondary" />
-              <span className="text-sm font-semibold">
-                {formatCurrency(user?.balance)}
+              <span className="text-sm font-semibold text-foreground">
+                {formatCurrency(user?.balance || "0")}
               </span>
             </div>
             <div className="flex items-center space-x-2">
@@ -95,8 +95,8 @@ export default function Navigation() {
                   {getInitials(user?.firstName, user?.lastName)}
                 </span>
               </div>
-              <span className="hidden md:block text-sm font-medium">
-                {user?.firstName} {user?.lastName}
+              <span className="hidden md:block text-sm font-medium text-foreground">
+                {user?.firstName || "User"} {user?.lastName || ""}
               </span>
               <Button variant="ghost" onClick={handleLogout} className="text-sm">
                 Sair

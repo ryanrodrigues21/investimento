@@ -73,6 +73,22 @@ export default {
           DEFAULT: "hsl(var(--dark))",
           foreground: "hsl(var(--dark-foreground))",
         },
+        bull: {
+          DEFAULT: "hsl(var(--bull))",
+          foreground: "hsl(var(--success-foreground))",
+        },
+        bear: {
+          DEFAULT: "hsl(var(--bear))",
+          foreground: "hsl(var(--destructive-foreground))",
+        },
+        neutral: {
+          DEFAULT: "hsl(var(--neutral))",
+          foreground: "hsl(var(--warning-foreground))",
+        },
+        trading: {
+          grid: "hsl(var(--trading-grid))",
+          accent: "hsl(var(--trading-accent))",
+        },
       },
       fontFamily: {
         sans: ["var(--font-sans)"],
