@@ -8,12 +8,24 @@ import memoize from "memoizee";
 import connectPg from "connect-pg-simple";
 import { storage } from "./storage";
 
-if (!process.env.REPLIT_DOMAINS) {
-  throw new Error("Environment variable REPLIT_DOMAINS not provided");
+// Verificar se as variáveis necessárias estão presentes
+const hasRequiredEnvVars = !!(
+  process.env.REPLIT_DOMAINS && 
+  process.env.REPL_ID && 
+  process.env.SESSION_SECRET
+);
+
+if (!hasRequiredEnvVars) {
+  console.warn("⚠️  Replit Auth disabled - missing environment variables:");
+  console.warn("   - REPLIT_DOMAINS:", !!process.env.REPLIT_DOMAINS);
+  console.warn("   - REPL_ID:", !!process.env.REPL_ID);
+  console.warn("   - SESSION_SECRET:", !!process.env.SESSION_SECRET);
+  console.warn("   Application will run without authentication.");
 }
 
 const getOidcConfig = memoize(
   async () => {
+    if (!hasRequiredEnvVars) throw new Error("Missing required environment variables");
     return await client.discovery(
       new URL(process.env.ISSUER_URL ?? "https://replit.com/oidc"),
       process.env.REPL_ID!
@@ -23,6 +35,20 @@ const getOidcConfig = memoize(
 );
 
 export function getSession() {
+  if (!hasRequiredEnvVars) {
+    // Retorna session básica para desenvolvimento local
+    return session({
+      secret: 'dev-secret-change-in-production',
+      resave: false,
+      saveUninitialized: false,
+      cookie: {
+        httpOnly: true,
+        secure: false, // false para desenvolvimento local
+        maxAge: 24 * 60 * 60 * 1000, // 24 horas
+      },
+    });
+  }
+
   const sessionTtl = 7 * 24 * 60 * 60 * 1000; // 1 week
   const pgStore = connectPg(session);
   const sessionStore = new pgStore({
@@ -69,6 +95,26 @@ async function upsertUser(
 export async function setupAuth(app: Express) {
   app.set("trust proxy", 1);
   app.use(getSession());
+  
+  if (!hasRequiredEnvVars) {
+    console.log("🔓 Running in development mode without Replit Auth");
+    
+    // Rotas mock para desenvolvimento
+    app.get("/api/login", (req, res) => {
+      res.json({ message: "Login disabled in development mode" });
+    });
+    
+    app.get("/api/logout", (req, res) => {
+      res.json({ message: "Logout disabled in development mode" });
+    });
+    
+    app.get("/api/callback", (req, res) => {
+      res.redirect("/");
+    });
+    
+    return;
+  }
+
   app.use(passport.initialize());
   app.use(passport.session());
 
@@ -128,6 +174,11 @@ export async function setupAuth(app: Express) {
 }
 
 export const isAuthenticated: RequestHandler = async (req, res, next) => {
+  if (!hasRequiredEnvVars) {
+    console.log("🔓 Authentication check skipped - development mode");
+    return next(); // Permitir acesso em modo de desenvolvimento
+  }
+
   const user = req.user as any;
 
   if (!req.isAuthenticated() || !user.expires_at) {

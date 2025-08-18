@@ -1,0 +1,854 @@
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InvestPro - Plataforma de Investimentos Digitais</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1E40AF',
+                        secondary: '#059669',
+                        accent: '#F59E0B',
+                        success: '#10B981',
+                        danger: '#EF4444',
+                        dark: '#1F2937'
+                    },
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        };
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="font-inter bg-gray-50 text-gray-900">
+
+    <!-- @COMPONENT: AuthenticationModal -->
+    <div id="authModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-2xl p-8 w-full max-w-md mx-4 shadow-2xl">
+            <div class="text-center mb-8">
+                <div class="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-chart-line text-white text-2xl"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-gray-900">Bem-vindo ao InvestPro</h2>
+                <p class="text-gray-600 mt-2">Faça login para acessar sua carteira</p>
+            </div>
+            
+            <form class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                    <input type="email" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="seu@email.com" data-mock="true">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Senha</label>
+                    <input type="password" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="••••••••" data-mock="true">
+                </div>
+                <button type="button" onclick="login()" class="w-full bg-primary text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors" data-event="click:handleLogin">
+                    Entrar
+                </button>
+            </form>
+            
+            <div class="mt-6 text-center">
+                <a href="#" class="text-primary hover:underline">Esqueceu sua senha?</a>
+                <p class="text-gray-600 mt-2">Não tem conta? <a href="#" class="text-primary hover:underline">Cadastre-se</a></p>
+            </div>
+        </div>
+    </div>
+    <!-- @END_COMPONENT: AuthenticationModal -->
+
+    <!-- @COMPONENT: Navigation -->
+    <nav class="bg-white shadow-sm border-b sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center">
+                        <div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
+                            <i class="fas fa-chart-line text-white text-lg"></i>
+                        </div>
+                        <span class="ml-3 text-xl font-bold text-gray-900">InvestPro</span>
+                    </div>
+                    <div class="hidden md:ml-6 md:flex md:space-x-8">
+                        <a href="#dashboard" class="border-primary text-primary border-b-2 py-2 px-1 text-sm font-medium">Dashboard</a>
+                        <a href="#investments" class="border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 border-b-2 py-2 px-1 text-sm font-medium">Investimentos</a>
+                        <a href="#wallet" class="border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 border-b-2 py-2 px-1 text-sm font-medium">Carteira</a>
+                        <a href="#history" class="border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 border-b-2 py-2 px-1 text-sm font-medium">Histórico</a>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="flex items-center space-x-2 bg-gray-100 px-3 py-1 rounded-lg">
+                        <i class="fas fa-wallet text-secondary"></i>
+                        <span class="text-sm font-semibold" data-bind="user.balance">R$ 25.847,92</span>
+                    </div>
+                    <div class="relative">
+                        <button class="flex items-center space-x-2 text-gray-700 hover:text-gray-900">
+                            <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+                                <span class="text-white text-sm font-semibold" data-bind="user.initials">JD</span>
+                            </div>
+                            <span class="hidden md:block text-sm font-medium" data-bind="user.name">João Silva</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <!-- @END_COMPONENT: Navigation -->
+
+    <!-- @COMPONENT: DashboardOverview -->
+    <div id="dashboard" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Portfolio Summary Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white rounded-xl p-6 shadow-sm border">
+                <div class="flex items-center">
+                    <div class="w-12 h-12 bg-secondary/10 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-wallet text-secondary text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm text-gray-600">Saldo Total</p>
+                        <p class="text-2xl font-bold text-gray-900" data-bind="portfolio.totalBalance">R$ 25.847,92</p>
+                        <p class="text-sm text-secondary">+12,5% este mês</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-xl p-6 shadow-sm border">
+                <div class="flex items-center">
+                    <div class="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-chart-line text-primary text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm text-gray-600">Investido</p>
+                        <p class="text-2xl font-bold text-gray-900" data-bind="portfolio.invested">R$ 20.000,00</p>
+                        <p class="text-sm text-primary">3 planos ativos</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-xl p-6 shadow-sm border">
+                <div class="flex items-center">
+                    <div class="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-coins text-accent text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm text-gray-600">Rendimentos</p>
+                        <p class="text-2xl font-bold text-gray-900" data-bind="portfolio.earnings">R$ 5.847,92</p>
+                        <p class="text-sm text-success">+29,2% de lucro</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-xl p-6 shadow-sm border">
+                <div class="flex items-center">
+                    <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-robot text-purple-600 text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm text-gray-600">IA Trading</p>
+                        <p class="text-2xl font-bold text-gray-900">89,3%</p>
+                        <p class="text-sm text-success">Taxa de sucesso</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Portfolio Growth Chart -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+            <div class="lg:col-span-2 bg-white rounded-xl p-6 shadow-sm border">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-xl font-bold text-gray-900">Evolução do Portfolio</h3>
+                    <div class="flex space-x-2">
+                        <button class="px-3 py-1 text-sm bg-primary text-white rounded-lg">7D</button>
+                        <button class="px-3 py-1 text-sm bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200">30D</button>
+                        <button class="px-3 py-1 text-sm bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200">90D</button>
+                    </div>
+                </div>
+                <div class="h-80">
+                    <canvas id="portfolioChart"></canvas>
+                </div>
+            </div>
+            
+            <!-- AI Trading Activity -->
+            <div class="bg-white rounded-xl p-6 shadow-sm border">
+                <h3 class="text-xl font-bold text-gray-900 mb-6">Atividade da IA</h3>
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between p-3 bg-success/10 rounded-lg">
+                        <div class="flex items-center">
+                            <i class="fas fa-arrow-up text-success mr-3"></i>
+                            <div>
+                                <p class="font-semibold text-sm">Compra BTC</p>
+                                <p class="text-xs text-gray-600">há 2 min</p>
+                            </div>
+                        </div>
+                        <span class="text-success font-semibold">+2,1%</span>
+                    </div>
+                    
+                    <div class="flex items-center justify-between p-3 bg-success/10 rounded-lg">
+                        <div class="flex items-center">
+                            <i class="fas fa-arrow-down text-orange-500 mr-3"></i>
+                            <div>
+                                <p class="font-semibold text-sm">Venda ETH</p>
+                                <p class="text-xs text-gray-600">há 15 min</p>
+                            </div>
+                        </div>
+                        <span class="text-success font-semibold">+1,8%</span>
+                    </div>
+                    
+                    <div class="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
+                        <div class="flex items-center">
+                            <i class="fas fa-arrows-alt-h text-blue-500 mr-3"></i>
+                            <div>
+                                <p class="font-semibold text-sm">Swap ADA</p>
+                                <p class="text-xs text-gray-600">há 32 min</p>
+                            </div>
+                        </div>
+                        <span class="text-success font-semibold">+0,9%</span>
+                    </div>
+                    
+                    <div class="mt-6 p-4 bg-gradient-to-r from-purple-500 to-primary rounded-lg text-white">
+                        <div class="flex items-center">
+                            <i class="fas fa-brain text-xl mr-3"></i>
+                            <div>
+                                <p class="font-semibold">IA Performance</p>
+                                <p class="text-sm opacity-90">Última hora: +4,8%</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- @END_COMPONENT: DashboardOverview -->
+
+    <!-- @COMPONENT: InvestmentPlans -->
+    <div id="investments" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="mb-8">
+            <h2 class="text-3xl font-bold text-gray-900 mb-2">Planos de Investimento</h2>
+            <p class="text-gray-600">Escolha o plano ideal para seus objetivos financeiros</p>
+        </div>
+        
+        <!-- Active Investments -->
+        <div class="mb-12">
+            <h3 class="text-xl font-bold text-gray-900 mb-6">Seus Investimentos Ativos</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- @MAP: activeInvestments.map(investment => ( -->
+                <div class="bg-white rounded-xl p-6 shadow-sm border border-secondary/20">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <h4 class="font-bold text-lg text-gray-900" data-bind="investment.name">Plano Premium</h4>
+                            <p class="text-sm text-gray-600" data-bind="investment.type">Longo Prazo</p>
+                        </div>
+                        <div class="flex items-center space-x-1 bg-success/10 px-2 py-1 rounded-full">
+                            <div class="w-2 h-2 bg-success rounded-full animate-pulse"></div>
+                            <span class="text-xs text-success font-semibold">Ativo</span>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-3 mb-6">
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Valor Investido:</span>
+                            <span class="font-semibold" data-bind="investment.amount">R$ 10.000,00</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Rendimento Atual:</span>
+                            <span class="font-semibold text-secondary" data-bind="investment.currentEarnings">R$ 3.247,89</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Taxa Diária:</span>
+                            <span class="font-semibold text-primary" data-bind="investment.dailyRate">2,1%</span>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <div class="flex justify-between text-sm mb-2">
+                            <span class="text-gray-600">Progresso</span>
+                            <span class="text-gray-600" data-bind="investment.progress">67 de 90 dias</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-gradient-to-r from-primary to-secondary h-2 rounded-full" style="width: 74%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex space-x-2">
+                        <button class="flex-1 bg-gray-100 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-200 transition-colors" data-event="click:viewDetails">
+                            Detalhes
+                        </button>
+                        <button class="flex-1 bg-danger/10 text-danger py-2 px-4 rounded-lg hover:bg-danger/20 transition-colors" data-event="click:emergencyWithdraw">
+                            Saque Antecipado
+                        </button>
+                    </div>
+                </div>
+                <!-- @END_MAP -->
+                
+                <!-- Repeat similar structure for 2 more active investments -->
+            </div>
+        </div>
+        
+        <!-- Available Plans -->
+        <div>
+            <h3 class="text-xl font-bold text-gray-900 mb-6">Novos Planos Disponíveis</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- @MAP: availablePlans.map(plan => ( -->
+                <div class="bg-white rounded-xl p-8 shadow-sm border hover:shadow-lg transition-shadow">
+                    <div class="text-center mb-6">
+                        <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-seedling text-primary text-2xl"></i>
+                        </div>
+                        <h4 class="text-xl font-bold text-gray-900" data-bind="plan.name">Starter</h4>
+                        <p class="text-gray-600" data-bind="plan.description">Ideal para iniciantes</p>
+                    </div>
+                    
+                    <div class="space-y-4 mb-8">
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600">Período:</span>
+                            <span class="font-semibold" data-bind="plan.duration">30 dias</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600">Taxa Diária:</span>
+                            <span class="font-semibold text-primary" data-bind="plan.dailyRate">1,5%</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600">Investimento Mín:</span>
+                            <span class="font-semibold" data-bind="plan.minInvestment">R$ 500,00</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600">Investimento Máx:</span>
+                            <span class="font-semibold" data-bind="plan.maxInvestment">R$ 5.000,00</span>
+                        </div>
+                        <div class="flex justify-between items-center border-t pt-4">
+                            <span class="text-gray-600">Retorno Estimado:</span>
+                            <span class="font-bold text-secondary text-lg" data-bind="plan.estimatedReturn">45%</span>
+                        </div>
+                    </div>
+                    
+                    <button class="w-full bg-primary text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors" data-event="click:investInPlan">
+                        Investir Agora
+                    </button>
+                </div>
+                <!-- @END_MAP -->
+                
+                <!-- Premium Plan -->
+                <div class="bg-gradient-to-br from-primary to-secondary rounded-xl p-8 shadow-lg text-white relative overflow-hidden">
+                    <div class="absolute top-4 right-4 bg-accent text-dark px-3 py-1 rounded-full text-xs font-bold">
+                        POPULAR
+                    </div>
+                    <div class="text-center mb-6">
+                        <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-crown text-accent text-2xl"></i>
+                        </div>
+                        <h4 class="text-xl font-bold">Premium</h4>
+                        <p class="text-blue-100">Para investidores experientes</p>
+                    </div>
+                    
+                    <div class="space-y-4 mb-8">
+                        <div class="flex justify-between items-center">
+                            <span class="text-blue-100">Período:</span>
+                            <span class="font-semibold">90 dias</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-blue-100">Taxa Diária:</span>
+                            <span class="font-semibold text-accent">2,5%</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-blue-100">Investimento Mín:</span>
+                            <span class="font-semibold">R$ 5.000,00</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-blue-100">Investimento Máx:</span>
+                            <span class="font-semibold">R$ 50.000,00</span>
+                        </div>
+                        <div class="flex justify-between items-center border-t border-white/20 pt-4">
+                            <span class="text-blue-100">Retorno Estimado:</span>
+                            <span class="font-bold text-accent text-lg">225%</span>
+                        </div>
+                    </div>
+                    
+                    <button class="w-full bg-white text-primary py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+                        Investir Agora
+                    </button>
+                </div>
+                
+                <!-- Professional Plan -->
+                <div class="bg-white rounded-xl p-8 shadow-sm border hover:shadow-lg transition-shadow">
+                    <div class="text-center mb-6">
+                        <div class="w-16 h-16 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-rocket text-accent text-2xl"></i>
+                        </div>
+                        <h4 class="text-xl font-bold text-gray-900">Professional</h4>
+                        <p class="text-gray-600">Máximo retorno</p>
+                    </div>
+                    
+                    <div class="space-y-4 mb-8">
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600">Período:</span>
+                            <span class="font-semibold">180 dias</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600">Taxa Diária:</span>
+                            <span class="font-semibold text-primary">3,2%</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600">Investimento Mín:</span>
+                            <span class="font-semibold">R$ 10.000,00</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600">Investimento Máx:</span>
+                            <span class="font-semibold">R$ 100.000,00</span>
+                        </div>
+                        <div class="flex justify-between items-center border-t pt-4">
+                            <span class="text-gray-600">Retorno Estimado:</span>
+                            <span class="font-bold text-secondary text-lg">576%</span>
+                        </div>
+                    </div>
+                    
+                    <button class="w-full bg-primary text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
+                        Investir Agora
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- @END_COMPONENT: InvestmentPlans -->
+
+    <!-- @COMPONENT: DigitalWallet -->
+    <div id="wallet" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="mb-8">
+            <h2 class="text-3xl font-bold text-gray-900 mb-2">Carteira Digital</h2>
+            <p class="text-gray-600">Gerencie seus depósitos e saques</p>
+        </div>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Wallet Balance -->
+            <div class="lg:col-span-2 space-y-6">
+                <div class="bg-gradient-to-br from-primary to-secondary rounded-xl p-8 text-white">
+                    <div class="flex justify-between items-start mb-6">
+                        <div>
+                            <p class="text-blue-100 mb-2">Saldo Disponível</p>
+                            <p class="text-4xl font-bold" data-bind="wallet.availableBalance">R$ 5.847,92</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-blue-100 mb-2">Total Investido</p>
+                            <p class="text-xl font-semibold" data-bind="wallet.totalInvested">R$ 20.000,00</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex space-x-4">
+                        <button class="flex-1 bg-white/20 backdrop-blur text-white py-3 rounded-lg font-semibold hover:bg-white/30 transition-colors flex items-center justify-center" data-event="click:openDepositModal">
+                            <i class="fas fa-plus mr-2"></i> Depositar
+                        </button>
+                        <button class="flex-1 bg-white/20 backdrop-blur text-white py-3 rounded-lg font-semibold hover:bg-white/30 transition-colors flex items-center justify-center" data-event="click:openWithdrawModal">
+                            <i class="fas fa-minus mr-2"></i> Sacar
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Transaction History -->
+                <div class="bg-white rounded-xl p-6 shadow-sm border">
+                    <h3 class="text-xl font-bold text-gray-900 mb-6">Histórico de Transações</h3>
+                    <div class="space-y-4">
+                        <!-- @MAP: transactions.map(transaction => ( -->
+                        <div class="flex items-center justify-between p-4 border border-gray-100 rounded-lg hover:bg-gray-50 transition-colors">
+                            <div class="flex items-center">
+                                <div class="w-10 h-10 bg-success/10 rounded-lg flex items-center justify-center mr-4">
+                                    <i class="fas fa-arrow-down text-success"></i>
+                                </div>
+                                <div>
+                                    <p class="font-semibold" data-bind="transaction.type">Depósito PIX</p>
+                                    <p class="text-sm text-gray-600" data-bind="transaction.date">Hoje, 14:32</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <p class="font-semibold text-success" data-bind="transaction.amount">+R$ 1.000,00</p>
+                                <p class="text-sm text-gray-600" data-bind="transaction.status">Confirmado</p>
+                            </div>
+                        </div>
+                        <!-- @END_MAP -->
+                        
+                        <div class="flex items-center justify-between p-4 border border-gray-100 rounded-lg hover:bg-gray-50 transition-colors">
+                            <div class="flex items-center">
+                                <div class="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center mr-4">
+                                    <i class="fas fa-chart-line text-primary"></i>
+                                </div>
+                                <div>
+                                    <p class="font-semibold">Investimento Premium</p>
+                                    <p class="text-sm text-gray-600">Ontem, 09:15</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <p class="font-semibold text-danger">-R$ 5.000,00</p>
+                                <p class="text-sm text-gray-600">Aplicado</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center justify-between p-4 border border-gray-100 rounded-lg hover:bg-gray-50 transition-colors">
+                            <div class="flex items-center">
+                                <div class="w-10 h-10 bg-accent/10 rounded-lg flex items-center justify-center mr-4">
+                                    <i class="fas fa-coins text-accent"></i>
+                                </div>
+                                <div>
+                                    <p class="font-semibold">Rendimento Diário</p>
+                                    <p class="text-sm text-gray-600">Ontem, 23:59</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <p class="font-semibold text-success">+R$ 125,00</p>
+                                <p class="text-sm text-gray-600">Creditado</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Quick Actions -->
+            <div class="space-y-6">
+                <!-- PIX Payment Options -->
+                <div class="bg-white rounded-xl p-6 shadow-sm border">
+                    <h3 class="text-lg font-bold text-gray-900 mb-4">Depósito PIX</h3>
+                    <div class="space-y-4">
+                        <div class="p-4 border border-gray-200 rounded-lg">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="font-semibold">Chave PIX</span>
+                                <i class="fas fa-copy text-gray-400 cursor-pointer hover:text-primary"></i>
+                            </div>
+                            <p class="text-sm text-gray-600 font-mono bg-gray-50 p-2 rounded" data-mock="true">investpro@pay.com.br</p>
+                        </div>
+                        
+                        <div class="p-4 border border-gray-200 rounded-lg text-center">
+                            <p class="text-sm text-gray-600 mb-2">QR Code PIX</p>
+                            <div class="w-32 h-32 bg-gray-100 rounded-lg mx-auto flex items-center justify-center">
+                                <i class="fas fa-qrcode text-gray-400 text-3xl"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-blue-50 p-4 rounded-lg">
+                            <p class="text-sm text-blue-800">
+                                <i class="fas fa-info-circle mr-2"></i>
+                                Depósitos são processados automaticamente em até 5 minutos
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Withdrawal Options -->
+                <div class="bg-white rounded-xl p-6 shadow-sm border">
+                    <h3 class="text-lg font-bold text-gray-900 mb-4">Solicitar Saque</h3>
+                    <form class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Valor do Saque</label>
+                            <input type="text" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="R$ 0,00" data-mock="true">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Chave PIX</label>
+                            <input type="text" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="Digite sua chave PIX" data-mock="true">
+                        </div>
+                        <button type="button" class="w-full bg-primary text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors" data-event="click:requestWithdraw">
+                            Solicitar Saque
+                        </button>
+                        <p class="text-xs text-gray-600 text-center">
+                            Saques são processados em até 24h úteis
+                        </p>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- @END_COMPONENT: DigitalWallet -->
+
+    <!-- @COMPONENT: AdminPanel -->
+    <div id="admin" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 hidden">
+        <div class="mb-8">
+            <h2 class="text-3xl font-bold text-gray-900 mb-2">Painel Administrativo</h2>
+            <p class="text-gray-600">Gerencie usuários, planos e configurações do sistema</p>
+        </div>
+        
+        <!-- Admin Stats -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white rounded-xl p-6 shadow-sm border">
+                <div class="flex items-center">
+                    <div class="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-users text-primary text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm text-gray-600">Total de Usuários</p>
+                        <p class="text-2xl font-bold text-gray-900" data-bind="admin.totalUsers">1,247</p>
+                        <p class="text-sm text-success">+15 hoje</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-xl p-6 shadow-sm border">
+                <div class="flex items-center">
+                    <div class="w-12 h-12 bg-secondary/10 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-chart-line text-secondary text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm text-gray-600">Volume Total</p>
+                        <p class="text-2xl font-bold text-gray-900" data-bind="admin.totalVolume">R$ 2,4M</p>
+                        <p class="text-sm text-success">+8,2% este mês</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-xl p-6 shadow-sm border">
+                <div class="flex items-center">
+                    <div class="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-coins text-accent text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm text-gray-600">Planos Ativos</p>
+                        <p class="text-2xl font-bold text-gray-900" data-bind="admin.activePlans">847</p>
+                        <p class="text-sm text-primary">3 tipos disponíveis</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-xl p-6 shadow-sm border">
+                <div class="flex items-center">
+                    <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-credit-card text-purple-600 text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm text-gray-600">Gateway Ativo</p>
+                        <p class="text-lg font-bold text-gray-900" data-bind="admin.activeGateway">Efi Pay</p>
+                        <p class="text-sm text-success">Funcionando</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Admin Tabs -->
+        <div class="bg-white rounded-xl shadow-sm border">
+            <div class="border-b border-gray-200">
+                <nav class="flex space-x-8 px-6">
+                    <button class="border-primary text-primary border-b-2 py-4 px-1 text-sm font-medium">Usuários</button>
+                    <button class="border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 border-b-2 py-4 px-1 text-sm font-medium">Planos</button>
+                    <button class="border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 border-b-2 py-4 px-1 text-sm font-medium">Transações</button>
+                    <button class="border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 border-b-2 py-4 px-1 text-sm font-medium">Configurações</button>
+                </nav>
+            </div>
+            
+            <!-- Users Table -->
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-lg font-bold text-gray-900">Gerenciar Usuários</h3>
+                    <div class="flex space-x-2">
+                        <input type="text" placeholder="Buscar usuário..." class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent" data-mock="true">
+                        <button class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead>
+                            <tr class="text-left border-b">
+                                <th class="pb-3 text-gray-600">Usuário</th>
+                                <th class="pb-3 text-gray-600">Email</th>
+                                <th class="pb-3 text-gray-600">Saldo</th>
+                                <th class="pb-3 text-gray-600">Planos Ativos</th>
+                                <th class="pb-3 text-gray-600">Status</th>
+                                <th class="pb-3 text-gray-600">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody class="space-y-2">
+                            <!-- @MAP: users.map(user => ( -->
+                            <tr class="border-b hover:bg-gray-50">
+                                <td class="py-4">
+                                    <div class="flex items-center">
+                                        <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center mr-3">
+                                            <span class="text-white text-sm font-semibold" data-bind="user.initials">JS</span>
+                                        </div>
+                                        <span class="font-semibold" data-bind="user.name">João Silva</span>
+                                    </div>
+                                </td>
+                                <td class="py-4 text-gray-600" data-bind="user.email">joao@email.com</td>
+                                <td class="py-4 font-semibold" data-bind="user.balance">R$ 25.847,92</td>
+                                <td class="py-4" data-bind="user.activePlans">3</td>
+                                <td class="py-4">
+                                    <span class="bg-success/10 text-success px-2 py-1 rounded-full text-xs font-semibold" data-bind="user.status">Ativo</span>
+                                </td>
+                                <td class="py-4">
+                                    <div class="flex space-x-2">
+                                        <button class="text-primary hover:text-blue-700" data-event="click:viewUser">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="text-gray-600 hover:text-gray-800" data-event="click:editUser">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="text-danger hover:text-red-700" data-event="click:suspendUser">
+                                            <i class="fas fa-ban"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <!-- @END_MAP -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- @END_COMPONENT: AdminPanel -->
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-12 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center mb-4">
+                        <div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
+                            <i class="fas fa-chart-line text-white text-lg"></i>
+                        </div>
+                        <span class="ml-3 text-xl font-bold">InvestPro</span>
+                    </div>
+                    <p class="text-gray-400">Plataforma de investimentos digitais com IA de trading avançada.</p>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold mb-4">Plataforma</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-white">Como Funciona</a></li>
+                        <li><a href="#" class="hover:text-white">Planos</a></li>
+                        <li><a href="#" class="hover:text-white">Segurança</a></li>
+                        <li><a href="#" class="hover:text-white">FAQ</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold mb-4">Suporte</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-white">Central de Ajuda</a></li>
+                        <li><a href="#" class="hover:text-white">Contato</a></li>
+                        <li><a href="#" class="hover:text-white">Termos de Uso</a></li>
+                        <li><a href="#" class="hover:text-white">Privacidade</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold mb-4">Conecte-se</h4>
+                    <div class="flex space-x-4">
+                        <a href="#" class="w-10 h-10 bg-gray-700 rounded-lg flex items-center justify-center hover:bg-gray-600">
+                            <i class="fab fa-telegram-plane"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-gray-700 rounded-lg flex items-center justify-center hover:bg-gray-600">
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-gray-700 rounded-lg flex items-center justify-center hover:bg-gray-600">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+                <p>&copy; 2024 InvestPro. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // TODO: Implement authentication, investment logic, admin functionality, and payment processing
+        
+        (function() {
+            // Initialize Charts
+            const ctx = document.getElementById('portfolioChart');
+            if (ctx) {
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul'],
+                        datasets: [{
+                            label: 'Portfolio Value',
+                            data: [15000, 16200, 17800, 16900, 20300, 23100, 25847],
+                            borderColor: '#1E40AF',
+                            backgroundColor: 'rgba(30, 64, 175, 0.1)',
+                            fill: true,
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: false,
+                                ticks: {
+                                    callback: function(value) {
+                                        return 'R$ ' + value.toLocaleString('pt-BR');
+                                    }
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Navigation functionality
+            function showSection(sectionId) {
+                // Hide all sections
+                const sections = ['dashboard', 'investments', 'wallet', 'history', 'admin'];
+                sections.forEach(id => {
+                    const section = document.getElementById(id);
+                    if (section) {
+                        section.classList.add('hidden');
+                    }
+                });
+                
+                // Show selected section
+                const targetSection = document.getElementById(sectionId);
+                if (targetSection) {
+                    targetSection.classList.remove('hidden');
+                }
+                
+                // Update navigation active state
+                const navLinks = document.querySelectorAll('nav a');
+                navLinks.forEach(link => {
+                    link.classList.remove('border-primary', 'text-primary');
+                    link.classList.add('border-transparent', 'text-gray-500');
+                });
+                
+                const activeLink = document.querySelector(`nav a[href="#${sectionId}"]`);
+                if (activeLink) {
+                    activeLink.classList.remove('border-transparent', 'text-gray-500');
+                    activeLink.classList.add('border-primary', 'text-primary');
+                }
+            }
+
+            // Add click handlers to navigation
+            document.querySelectorAll('nav a[href^="#"]').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const sectionId = this.getAttribute('href').substring(1);
+                    showSection(sectionId);
+                });
+            });
+
+            // Show dashboard by default
+            showSection('dashboard');
+        })();
+
+        // Mock authentication function
+        function login() {
+            const modal = document.getElementById('authModal');
+            modal.classList.add('hidden');
+            // TODO: Implement real authentication logic
+        }
+
+        // Show auth modal on page load for demo
+        document.addEventListener('DOMContentLoaded', function() {
+            const modal = document.getElementById('authModal');
+            modal.classList.remove('hidden');
+        });
+    </script>
+</body>
+</html>
