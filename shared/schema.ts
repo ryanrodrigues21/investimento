@@ -29,6 +29,7 @@ export const sessions = pgTable(
 export const users = pgTable("users", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   email: varchar("email").unique(),
+  passwordHash: varchar("password_hash"),
   firstName: varchar("first_name"),
   lastName: varchar("last_name"),
   profileImageUrl: varchar("profile_image_url"),
@@ -130,6 +131,7 @@ export const transactionsRelations = relations(transactions, ({ one }) => ({
 // Types
 export type UpsertUser = typeof users.$inferInsert;
 export type User = typeof users.$inferSelect;
+export type CreateUser = Omit<typeof users.$inferInsert, 'id' | 'createdAt' | 'updatedAt'>;
 
 export type InsertInvestmentPlan = typeof investmentPlans.$inferInsert;
 export type InvestmentPlan = typeof investmentPlans.$inferSelect;

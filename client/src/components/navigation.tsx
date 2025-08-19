@@ -8,7 +8,13 @@ export default function Navigation() {
   const [location] = useLocation();
 
   const handleLogout = () => {
-    window.location.href = "/api/logout";
+    fetch("/api/logout", { method: "POST", credentials: "include" })
+      .then(() => {
+        window.location.reload();
+      })
+      .catch(() => {
+        window.location.reload();
+      });
   };
 
   const formatCurrency = (value: string | undefined) => {

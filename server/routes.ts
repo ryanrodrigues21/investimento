@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { setupAuth, isAuthenticated } from "./replitAuth";
+import { setupAuth, isAuthenticated } from "./auth";
 import { 
   insertInvestmentPlanSchema, 
   insertUserInvestmentSchema,
@@ -17,7 +17,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Auth routes
   app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const user = await storage.getUser(userId);
       res.json(user);
     } catch (error) {
@@ -29,7 +29,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Dashboard routes
   app.get('/api/dashboard', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const user = await storage.getUser(userId);
       const activeInvestments = await storage.getActiveUserInvestments(userId);
       const recentTransactions = await storage.getUserTransactions(userId, 5);
@@ -60,7 +60,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post('/api/investment-plans', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const user = await storage.getUser(userId);
       
       if (!user?.isAdmin) {
@@ -79,7 +79,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // User investments routes
   app.get('/api/investments', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const investments = await storage.getUserInvestments(userId);
       res.json(investments);
     } catch (error) {
@@ -90,7 +90,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post('/api/investments', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const investmentData = insertUserInvestmentSchema.parse({
         ...req.body,
         userId,
@@ -106,7 +106,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post('/api/investments/:id/withdraw', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const investmentId = req.params.id;
 
       const result = await investmentService.earlyWithdrawal(userId, investmentId);
@@ -120,7 +120,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Transaction routes
   app.get('/api/transactions', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const limit = parseInt(req.query.limit as string) || 20;
       const transactions = await storage.getUserTransactions(userId, limit);
       res.json(transactions);
@@ -132,7 +132,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post('/api/transactions/deposit', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const { amount } = req.body;
 
       if (!amount || parseFloat(amount) <= 0) {
@@ -159,7 +159,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post('/api/transactions/withdraw', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const { amount, pixKey } = req.body;
 
       if (!amount || parseFloat(amount) <= 0) {
@@ -197,7 +197,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Admin routes
   app.get('/api/admin/stats', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const user = await storage.getUser(userId);
       
       if (!user?.isAdmin) {
@@ -219,7 +219,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get('/api/admin/users', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const user = await storage.getUser(userId);
       
       if (!user?.isAdmin) {
@@ -236,7 +236,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post('/api/admin/settings', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const user = await storage.getUser(userId);
       
       if (!user?.isAdmin) {
@@ -254,7 +254,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Calculate earnings endpoint (for manual trigger)
   app.post('/api/admin/calculate-earnings', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const user = await storage.getUser(userId);
       
       if (!user?.isAdmin) {

@@ -7,6 +7,7 @@ import {
   systemSettings,
   type User,
   type UpsertUser,
+  type CreateUser,
   type InvestmentPlan,
   type InsertInvestmentPlan,
   type UserInvestment,
@@ -22,6 +23,8 @@ import { eq, desc, and, gte, sql } from "drizzle-orm";
 export interface IStorage {
   // User operations (required for Replit Auth)
   getUser(id: string): Promise<User | undefined>;
+  getUserByEmail(email: string): Promise<User | undefined>;
+  createUser(user: CreateUser): Promise<User>;
   upsertUser(user: UpsertUser): Promise<User>;
   
   // Investment plans
@@ -65,6 +68,16 @@ export class DatabaseStorage implements IStorage {
   // User operations (required for Replit Auth)
   async getUser(id: string): Promise<User | undefined> {
     const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user;
+  }
+
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.email, email));
+    return user;
+  }
+
+  async createUser(userData: CreateUser): Promise<User> {
+    const [user] = await db.insert(users).values(userData).returning();
     return user;
   }
 
